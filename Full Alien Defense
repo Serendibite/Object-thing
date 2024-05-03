@@ -182,10 +182,10 @@ function tick(game){
     if (game.aliens.length < max){
       var spawn_delay = game.step / ~~(1800/2*2.5);
       var alien = aliens[~~(Math.random()*Math.min(aliens.length,spawn_delay/4))];
-      var coords = [[0,150],[0,-150],[120,0],[-120,0]];
-      oof = coords[~~(Math.random()*coords.length)];
-      alien.x = oof[1]+Math.cos(Math.random()*Math.PI*2)*5;
-      alien.y = oof[0]+Math.sin(Math.random()*Math.PI*2)*5;
+//      var coords = [[0,150],[0,-150],[120,0],[-120,0]];
+//      oof = coords[~~(Math.random()*coords.length)];
+      alien.x = 0;
+      alien.y = 0;
       game.addAlien(alien);
     }
     teams.count = [0,0];
@@ -203,8 +203,8 @@ function tick(game){
 function game_start(game){
   if (!game.custom.init){
     game.custom.init = true;
-    game.addAlien({code:19,level:3,x:-370,shield:60000,laser_speed:0,rate:1});
-    game.addAlien({code:19,level:3,x:370,shield:60000,laser_speed:0,rate:1});
+    game.addAlien({code:19,level:3,x:-450,shield:60000,laser_speed:0,rate:1});
+    game.addAlien({code:19,level:3,x:450,shield:60000,laser_speed:0,rate:1});
   }
   this.tick = tick;
 }
@@ -240,7 +240,7 @@ this.event = function(event, game){
 };
 
 var aliens = [
-{code:10,level:2,points:60,crystal_drop:50,shield:150},
+{code:10,level:2,points:60,crystal_drop:50,shield:150,weapon_drop:12},
 {code:16,level:1,points:100,crystal_drop:50}
 ];
 
@@ -321,6 +321,24 @@ var basicBarrier = {
   physics: {
     mass: 500,
     shape: [0.666,0.668,0.698,0.734,0.773,0.843,0.892,0.891,0.807,0.747,0.704,0.677,0.662,0.662,0.677,0.704,0.747,0.807,0.891,0.892,0.843,0.773,0.734,0.698,0.668,0.666,0.668,0.698,0.724,0.773,0.843,0.892,0.891,0.807,0.747,0.704,0.677,0.668,0.675,0.688,0.704,0.747,0.807,0.891,0.892,0.843,0.773,0.724,0.698,0.668],
+    fixed: true
+  }
+};
+
+var smallBarrier = {
+  id: "smallBarrier",
+  obj: "https://raw.githubusercontent.com/Serendibite/Object-thing/master/SmallBlankBarrier.obj",
+  diffuse: "https://raw.githubusercontent.com/StarblastFinalizer/StarblastModding/master/ship_lambert_texture.png",
+  emissive: "https://raw.githubusercontent.com/StarblastFinalizer/StarblastModding/master/ship_emissive_texture.png",
+  specular: "https://raw.githubusercontent.com/Serendibite/Object-thing/master/Specular%20map%20for%20starblast%20objects.png",
+  emissiveColor: 0xff0000,
+  specularColor: 0x8e8e8e,
+  diffuseColor: 0xffa1a1,
+  transparent: false,
+  shininess: 2,
+  physics: {
+    mass: 500,
+    shape: [0.498,0.513,0.53,0.546,0.586,0.651,0.669,0.667,0.613,0.567,0.534,0.521,0.508,0.501,0.521,0.542,0.567,0.613,0.667,0.669,0.651,0.586,0.546,0.53,0.513,0.498,0.513,0.53,0.546,0.586,0.651,0.669,0.667,0.613,0.567,0.542,0.521,0.501,0.508,0.521,0.534,0.567,0.613,0.667,0.669,0.651,0.586,0.546,0.53,0.513],
     fixed: true
   }
 };
@@ -424,17 +442,6 @@ var addRadarSpot = function(x,y,w,h,alpha) {
   }) ;
 } ;
 
-var addPlatform = function(xx,yy,s) {
-  game.setObject({
-    id:"platform"+xx+":"+yy,
-    type:platform,
-    position:{x:xx,y:yy,z:-20},
-    scale:{x:s,y:s,z:15},
-    rotation:{x:0,y:0,z:0}
-  }) ;
-  addRadarSpot(xx,yy,12,10,0.4);
-}
-
 var addBasicBarrier = function(xx,yy,s,rotate,fs) {
   game.setObject({
     id:"basicBarrier"+xx+":"+yy,
@@ -445,6 +452,29 @@ var addBasicBarrier = function(xx,yy,s,rotate,fs) {
   }) ;
   addPlatform(xx,yy,fs);
   addRadarSpot(xx,yy,s/3,s/3,0.7);
+}
+
+var addSmallBarrier = function(xx,yy,s,rotate,fs) {
+  game.setObject({
+    id:"smallBarrier"+xx+":"+yy,
+    type:smallBarrier,
+    position:{x:xx,y:yy,z:0},
+    scale:{x:s*1.2,y:s*1.2,z:fs==6?3.5:s},
+    rotation: {x:0,y:0,z:rotate}
+  }) ;
+  addPlatform(xx,yy,fs);
+  addRadarSpot(xx,yy,s/3,s/3,0.7);
+}
+
+var addPlatform = function(xx,yy,s) {
+  game.setObject({
+    id:"platform"+xx+":"+yy,
+    type:platform,
+    position:{x:xx,y:yy,z:-20},
+    scale:{x:s,y:s,z:15},
+    rotation:{x:0,y:0,z:0}
+  }) ;
+  addRadarSpot(xx,yy,12,10,0.4);
 }
 
 var addPDCBarrier = function(xx,yy,s,rotate,fs) {
@@ -471,17 +501,36 @@ var addRailgunBarrier = function(xx,yy,s,rotate,fs) {
   addRadarSpot(xx,yy,s/3,s/3,0.7);
 }
 
-var size=24
+var size=24/1.1
 
 addBasicBarrier(50,50,18,Math.PI,size);
 addBasicBarrier(-50,50,18,Math.PI,size);
 addBasicBarrier(50,-50,18,0,size);
 addBasicBarrier(-50,-50,18,0,size);
+
 addBasicBarrier(0,100,18,Math.PI,size);
+
 addBasicBarrier(100,100,18,Math.PI,size);
 addBasicBarrier(-100,100,18,0,size);
 addBasicBarrier(100,-100,18,0,size);
 addBasicBarrier(-100,-100,18,Math.PI,size);
+
+addBasicBarrier(-150,0,18,Math.PI,size);
+addBasicBarrier(150,0,18,Math.PI,size);
+
+addSmallBarrier(150,100,18,0,size*0.666)
+addSmallBarrier(-150,100,18,0,size*0.666)
+addSmallBarrier(150,-100,18,0,size*0.666)
+addSmallBarrier(-150,-100,18,0,size*0.666)
+
+addSmallBarrier(200,75,18,0,size*0.666)
+addSmallBarrier(200,-75,18,0,size*0.666)
+addSmallBarrier(250,25,18,0,size*0.666)
+addSmallBarrier(250,-25,18,0,size*0.666)
+addSmallBarrier(-200,75,18,0,size*0.666)
+addSmallBarrier(-200,-75,18,0,size*0.666)
+addSmallBarrier(-250,25,18,0,size*0.666)
+addSmallBarrier(-250,-25,18,0,size*0.666)
 
 addPDCBarrier(-150,50,18,0,size);
 addPDCBarrier(150,50,18,Math.PI,size);
