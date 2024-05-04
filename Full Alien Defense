@@ -428,6 +428,42 @@ var railgunBarrier = {
   }
 };
 
+var alienCell = {
+  id: "alienCell",
+  obj: "https://raw.githubusercontent.com/Serendibite/Object-thing/master/Alien%20cell%20wall",
+  diffuse: "https://raw.githubusercontent.com/StarblastFinalizer/StarblastModding/master/ship_lambert_texture.png",
+  emissive: "https://raw.githubusercontent.com/StarblastFinalizer/StarblastModding/master/ship_emissive_texture.png",
+  specular: "https://raw.githubusercontent.com/Serendibite/Object-thing/master/Specular%20map%20for%20starblast%20objects.png",
+  emissiveColor: 0xff0000,
+  specularColor: 0x8e8e8e,
+  diffuseColor: 0xffa1a1,
+  transparent: false,
+  shininess: 2,
+  physics: {
+    mass: 500,
+    shape: [1.1,0.92,0.52,0.31,0.19,0.15,0.13,0.11,0.1,0.09,0.09,0.09,0.08,0.09,0.09,0.09,0.1,0.11,0.13,0.15,0.19,0.31,0.52,0.92,1.1,0.92,0.52,0.31,0.19,0.15,0.13,0.11,0.1,0.09,0.09,0.09,0.08,0.09,0.09,0.09,0.1,0.11,0.13,0.15,0.19,0.31,0.52,0.92],
+    fixed: true
+  }
+};
+
+var alienCellCorner = {
+  id: "alienCellCorner",
+  obj: "https://raw.githubusercontent.com/Serendibite/Object-thing/master/Alien%20cell%20corner",
+  diffuse: "https://raw.githubusercontent.com/StarblastFinalizer/StarblastModding/master/ship_lambert_texture.png",
+  emissive: "https://raw.githubusercontent.com/StarblastFinalizer/StarblastModding/master/ship_emissive_texture.png",
+  specular: "https://raw.githubusercontent.com/Serendibite/Object-thing/master/Specular%20map%20for%20starblast%20objects.png",
+  emissiveColor: 0xff0000,
+  specularColor: 0x8e8e8e,
+  diffuseColor: 0xffa1a1,
+  transparent: false,
+  shininess: 2,
+  physics: {
+    mass: 500,
+    shape: [0.498,0.513,0.53,0.546,0.586,0.651,0.669,0.667,0.613,0.567,0.534,0.521,0.508,0.501,0.521,0.542,0.567,0.613,0.667,0.669,0.651,0.586,0.546,0.53,0.513,0.498,0.513,0.53,0.546,0.586,0.651,0.669,0.667,0.613,0.567,0.542,0.521,0.501,0.508,0.521,0.534,0.567,0.613,0.667,0.669,0.651,0.586,0.546,0.53,0.513],
+    fixed: true
+  }
+};
+
 //green 0x14ff00
 //red 0xff0000
 
@@ -501,6 +537,28 @@ var addRailgunBarrier = function(xx,yy,s,rotate,fs) {
   addRadarSpot(xx,yy,s/3,s/3,0.7);
 }
 
+var addAlienCell = function(xx,yy,s,rotate,rw,rh) {
+  game.setObject({
+    id:"alienCell"+xx+":"+yy,
+    type:alienCell,
+    position:{x:xx,y:yy,z:0},
+    scale:{x:s*1.2,y:s*1.2,z:s*1},
+    rotation: {x:0,y:0,z:rotate}
+  }) ;
+  addRadarSpot(xx,yy,rw*s,rh*s,0.7);
+}
+
+var addAlienCellCorner = function(xx,yy,s,rotate) {
+  game.setObject({
+    id:"alienCellCorner"+xx+":"+yy,
+    type:alienCellCorner,
+    position:{x:xx,y:yy,z:0},
+    scale:{x:s*1.2,y:s*1.2,z:s*1.2},
+    rotation: {x:0,y:0,z:rotate}
+  }) ;
+  addRadarSpot(xx,yy,s/4,s/4,0.7);
+}
+
 var size=24/1.1
 
 addBasicBarrier(50,50,18,Math.PI,size);
@@ -539,6 +597,26 @@ addPDCBarrier(150,-50,18,Math.PI,size);
 
 addRailgunBarrier(-100,0,18,0,size);
 addRailgunBarrier(100,0,18,Math.PI,size);
+
+orangeCell: addAlienCell(-430,0,18,Math.PI/2,0.3,1);
+orangeCell: addAlienCell(-470,0,18,Math.PI/2,0.3,1);
+orangeCell: addAlienCell(-450,20,18,0,1,0.3);
+orangeCell: addAlienCell(-450,-20,18,0,1,0.3);
+
+orangeCell: addAlienCellCorner(-430,20,18,Math.PI);
+orangeCell: addAlienCellCorner(-430,-20,18,Math.PI/2);
+orangeCell: addAlienCellCorner(-470,20,18,3*Math.PI/2);
+orangeCell: addAlienCellCorner(-470,-20,18,0);
+
+blueCell: addAlienCell(430,0,18,Math.PI/2,0.3,1);
+blueCell: addAlienCell(470,0,18,Math.PI/2,0.3,1);
+blueCell: addAlienCell(450,20,18,0,1,0.3);
+blueCell: addAlienCell(450,-20,18,0,1,0.3);
+
+blueCell: addAlienCellCorner(430,20,18,3*Math.PI/2);
+blueCell: addAlienCellCorner(430,-20,18,0);
+blueCell: addAlienCellCorner(470,20,18,Math.PI);
+blueCell: addAlienCellCorner(470,-20,18,Math.PI/2);
 
 alienBarrierPlatform: addPlatform(0,-100,size);
 alienBarrierRadar: addRadarSpot(0,-100,6,6,0.7);
